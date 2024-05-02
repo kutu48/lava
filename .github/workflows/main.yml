@@ -1,0 +1,78 @@
+name: Ethereum and Axelar Auto Commit
+
+on:
+  push:
+    branches:
+      - main
+
+  schedule:
+    - cron: '*/10 * * * *' # Runs every 10 minutes
+
+  workflow_dispatch: # Allows manual triggering from the GitHub UI
+
+permissions:
+  contents: write # Grants permissions to write to the repo
+
+env:
+  GIT_USER_EMAIL: Input your email
+  GIT_USER_NAME: Github Username 
+
+jobs:
+  ethereum_auto_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Pull latest changes
+        run: |
+          git pull origin main
+
+      - name: Run Ethereum script
+        run: |
+          chmod +x ethereum.sh
+          ./ethereum.sh
+
+      - name: Configure Git identity
+        run: |
+          git config user.email "$GIT_USER_EMAIL"
+          git config user.name "$GIT_USER_NAME"
+
+      - name: Commit changes
+        run: |
+          git add -A
+          git commit -m "$(shuf -n1 -e "🔥 Hotfix" "✨ Feature" "🚀 Upgrade" "🛠️ Fix" "🔧 Refactor" "🔍 Investigate" "💡 Improve" "📦 Update" "📈 Optimize" "💬 Comment" | awk '{print $0}') Ethereum network"
+
+      - name: Push changes
+        run: |
+          git push origin main
+
+  axelar_auto_commit:
+    runs-on: ubuntu-latest
+    needs: ethereum_auto_commit
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Pull latest changes
+        run: |
+          git pull origin main
+
+      - name: Run Axelar script
+        run: |
+          chmod +x axelar.sh
+          ./axelar.sh
+
+      - name: Configure Git identity
+        run: |
+          git config user.email "$GIT_USER_EMAIL"
+          git config user.name "$GIT_USER_NAME"
+
+      - name: Commit changes
+        run: |
+          git add -A
+          git commit -m "$(shuf -n1 -e "🔥 Hotfix" "✨ Feature" "🚀 Upgrade" "🛠️ Fix" "🔧 Refactor" "🔍 Investigate" "💡 Improve" "📦 Update" "📈 Optimize" "💬 Comment" | awk '{print $0}') Axelar network"
+
+      - name: Push changes
+        run: |
+          git push origin main
